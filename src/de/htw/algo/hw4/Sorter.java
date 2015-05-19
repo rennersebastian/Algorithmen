@@ -1,11 +1,17 @@
 package de.htw.algo.hw4;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Sorter {
+	
+	public BigInteger comparisonsQuick = BigInteger.ZERO;
+	public BigInteger comparisonsIns = BigInteger.ZERO;
+	public BigInteger comparisonsMerge = BigInteger.ZERO;
+	
 	/**
 	 * QUICKSORT
 	 */
@@ -18,6 +24,7 @@ public class Sorter {
 			List<Integer> more = new LinkedList<Integer>();
 
 			for (Integer i : input) {
+				comparisonsQuick = comparisonsQuick.add(BigInteger.ONE);
 				if (i.compareTo(pivot) < 0) {
 					less.add(i);
 				}
@@ -46,9 +53,11 @@ public class Sorter {
 		for (int i = 1; i < size; i++) {
 			Integer value = result.get(i);
 			int j = i-1;
+			comparisonsIns = comparisonsIns.add(BigInteger.ONE);
 			while (j >= 0 && result.get(j).compareTo(value) > 0) {
 				result.set(j+1, result.get(j));
 				j = j-1;
+				comparisonsIns = comparisonsIns.add(BigInteger.ONE);
 			}
 			result.set(j+1, value);
 		}		
@@ -77,6 +86,7 @@ public class Sorter {
 		Integer x = it1.next();
 		Integer y = it2.next();
 		while (true) {
+			comparisonsMerge = comparisonsMerge.add(BigInteger.ONE);
 			if (x.compareTo(y) <= 0) {
 				result.add(x);
 				if (it1.hasNext()) {

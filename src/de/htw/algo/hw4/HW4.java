@@ -1,4 +1,5 @@
 package de.htw.algo.hw4;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 public class HW4 extends Application {
 	private Sorter sorter = new Sorter();
 	private static long startTime, durationIns, durationQuick, durationMerge;
+	private static BigInteger comparisonsQuick, comparisonsIns, comparisonsMerge;
 	private static final int MAX_N = 2000;
 	private static final int STEPS = 100;
 	private static final int LOOPS = 500;
@@ -23,20 +25,27 @@ public class HW4 extends Application {
     	/**
     	 * Sorting Test
     	 */
-    	List<Integer> testNums = generateRandomNumbers(25);
+    	List<Integer> testNums = generateRandomNumbers(5);
     	printNumbers(testNums, "Input");
     	printNumbers(sorter.quicksort(testNums), "Quicksort");
     	printNumbers(sorter.insertionSort(testNums), "Insertionsort");
     	printNumbers(sorter.mergeSort(testNums), "Mergesort");
+    	System.out.println();
     	
         stage.setTitle("Algorithmen - HW4");
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Input size n");
+        yAxis.setLabel("Time in ns");
         final LineChart<Number,Number> lineChart = 
                 new LineChart<Number,Number>(xAxis,yAxis);
                 
-        lineChart.setTitle("Sorting Algorithms");        
+        lineChart.setTitle("Sorting Algorithms");     
+        
+        yAxis.setLabel("amount of comparisions");
+        final LineChart<Number,Number> lineChartComp = 
+                new LineChart<Number,Number>(xAxis,yAxis);
+        lineChartComp.setTitle("Sorting Algorithms Comparisions"); 
 
         XYChart.Series quickSort = new XYChart.Series();
         XYChart.Series insertionSort = new XYChart.Series();
@@ -44,10 +53,23 @@ public class HW4 extends Application {
         quickSort.setName("Quicksort");        
         insertionSort.setName("Insertionsort"); 
         mergeSort.setName("Mergesort"); 
+        // Amount of comparisions
+        XYChart.Series quickSortComp = new XYChart.Series();
+        XYChart.Series insertionSortComp = new XYChart.Series();
+        XYChart.Series mergeSortComp = new XYChart.Series();
+        quickSortComp.setName("Quicksort");        
+        insertionSortComp.setName("Insertionsort"); 
+        mergeSortComp.setName("Mergesort");
+        
         for(int i = STEPS; i <= MAX_N; i+=STEPS){
         	durationIns = 0;
         	durationQuick = 0;
         	durationMerge = 0;
+        	
+        	sorter.comparisonsQuick = BigInteger.ZERO;
+        	sorter.comparisonsIns = BigInteger.ZERO;
+        	sorter.comparisonsMerge = BigInteger.ZERO;
+        	
         	List<Integer> input = generateRandomNumbers(i);
         	/* 
         	 * Input für Tests mit sortierten Listen
@@ -69,6 +91,16 @@ public class HW4 extends Application {
         	quickSort.getData().add(new XYChart.Data<Integer, Long>(i, (durationQuick/LOOPS)));
     		insertionSort.getData().add(new XYChart.Data<Integer, Long>(i, (durationIns/LOOPS)));
     		mergeSort.getData().add(new XYChart.Data<Integer, Long>(i, (durationMerge/LOOPS)));
+    		
+    		// Average amount of comparisions
+    		comparisonsQuick = sorter.comparisonsQuick.divide(BigInteger.valueOf(LOOPS));
+    		comparisonsIns = sorter.comparisonsIns.divide(BigInteger.valueOf(LOOPS));
+    		comparisonsMerge = sorter.comparisonsMerge.divide(BigInteger.valueOf(LOOPS));
+    		quickSortComp.getData().add(new XYChart.Data<Integer, BigInteger>(i, comparisonsQuick));
+    		insertionSortComp.getData().add(new XYChart.Data<Integer, BigInteger>(i, comparisonsIns));
+    		mergeSortComp.getData().add(new XYChart.Data<Integer, BigInteger>(i, comparisonsMerge));
+    		
+    		System.out.println("Ins: " + comparisonsIns + " - " + "Quick: " + comparisonsQuick + " Merge: " + comparisonsMerge);
         }
 
         List<Integer> sortedList = new ArrayList<Integer>();
@@ -80,6 +112,14 @@ public class HW4 extends Application {
         lineChart.getData().add(insertionSort);
         lineChart.getData().add(mergeSort);
        
+        stage.setScene(scene);
+        stage.show();
+        
+        scene = new Scene(lineChartComp,800,600);
+        lineChartComp.getData().add(quickSortComp);
+        lineChartComp.getData().add(insertionSortComp);
+        lineChartComp.getData().add(mergeSortComp);
+        
         stage.setScene(scene);
         stage.show();
     }
