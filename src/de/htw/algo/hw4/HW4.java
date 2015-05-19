@@ -48,16 +48,22 @@ public class HW4 extends Application {
         	durationIns = 0;
         	durationQuick = 0;
         	durationMerge = 0;
-        	List<Integer> rndNumbers = generateRandomNumbers(i);
+        	List<Integer> input = generateRandomNumbers(i);
+        	/* 
+        	 * Input für Tests mit sortierten Listen
+        	List<Integer> input = new ArrayList<Integer>();
+            for(int k = 0; k <= i; k++)
+            	input.add(k, k);
+            */
         	for(int j = 0; j < LOOPS; j++){
 	        	startTime = System.nanoTime();
-	        	sorter.insertionSort(rndNumbers);
+	        	sorter.insertionSort(input);
 	    		durationIns += (System.nanoTime() - startTime);
 	        	startTime = System.nanoTime();
-	        	sorter.quicksort(rndNumbers);
+	        	sorter.quicksort(input);
 	    		durationQuick += (System.nanoTime() - startTime);
 	        	startTime = System.nanoTime();
-	        	sorter.mergeSort(rndNumbers);
+	        	sorter.mergeSort(input);
 	    		durationMerge += (System.nanoTime() - startTime);
         	}
         	quickSort.getData().add(new XYChart.Data<Integer, Long>(i, (durationQuick/LOOPS)));
@@ -65,6 +71,10 @@ public class HW4 extends Application {
     		mergeSort.getData().add(new XYChart.Data<Integer, Long>(i, (durationMerge/LOOPS)));
         }
 
+        List<Integer> sortedList = new ArrayList<Integer>();
+        for(int i = 0; i <= MAX_N+STEPS; i++)
+        	sortedList.add(i, i);
+		
         Scene scene  = new Scene(lineChart,800,600);
         lineChart.getData().add(quickSort);
         lineChart.getData().add(insertionSort);
