@@ -11,13 +11,12 @@ public class Sorter {
 	 */
 	public List<Integer> quicksort(List<Integer> input) {
 		if (!input.isEmpty()) {
-			Integer pivot = input.get(0); // This pivot can change to get faster results
+			Integer pivot = input.get(0);
 
 			List<Integer> less = new LinkedList<Integer>();
 			List<Integer> pivotList = new LinkedList<Integer>();
 			List<Integer> more = new LinkedList<Integer>();
 
-			// Partition
 			for (Integer i : input) {
 				if (i.compareTo(pivot) < 0) {
 					less.add(i);
@@ -28,11 +27,9 @@ public class Sorter {
 					pivotList.add(i);
 			}
 
-			// Recursively sort sublists
 			less = quicksort(less);
 			more = quicksort(more);
 
-			// Concatenate results
 			less.addAll(pivotList);
 			less.addAll(more);
 			return less;
