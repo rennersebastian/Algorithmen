@@ -24,7 +24,7 @@ public class Sorter {
 			List<Integer> more = new LinkedList<Integer>();
 
 			for (Integer i : input) {
-				comparisonsQuick = comparisonsQuick.add(BigInteger.ONE);
+				//comparisonsQuick = comparisonsQuick.add(BigInteger.ONE);
 				if (i.compareTo(pivot) < 0) {
 					less.add(i);
 				}

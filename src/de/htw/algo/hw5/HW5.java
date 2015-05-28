@@ -6,18 +6,67 @@ import java.util.Random;
 
 import de.htw.algo.hw4.Sorter;
 
-public class HW5 {
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+
+public class HW5 extends Application {
 	private static Sorter sorter = new Sorter();
-	private static Heap heap;
+	private static Heap heap = new Heap();;
+	private static long startTime, durationQuick, durationHeap;
+	private static final int MAX_N = 500;
+	private static final int STEPS = 100;
+	private static final int LOOPS = 100;
 	
-	public static void main(String[] args) {
+	@Override
+	public void start(Stage stage) { 
 		List<Integer> testNums = generateRandomNumbers(15);
-		
-		heap = new Heap(testNums);
 		
     	printNumbers(testNums, "Input");
     	printNumbers(sorter.quicksort(testNums), "Quicksort");
-    	//printNumbers(heap.sort(), "Heapsort");
+    	printNumbers(heap.heapSort(testNums), "Heapsort");
+    	
+    	stage.setTitle("Algorithmen - HW5");
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Input size n");
+        yAxis.setLabel("Time in ns");
+        final LineChart<Number,Number> lineChart = 
+                new LineChart<Number,Number>(xAxis,yAxis);
+                
+        lineChart.setTitle("Sorting Algorithms");     
+
+        XYChart.Series quickSort = new XYChart.Series();
+        XYChart.Series heapSort = new XYChart.Series();
+        quickSort.setName("Quicksort");
+        heapSort.setName("Heapsort");
+        
+        for(int i = STEPS; i <= MAX_N; i+=STEPS){
+        	durationQuick = 0;
+        	durationHeap = 0;
+        	List<Integer> input = generateRandomNumbers(i);
+        	
+        	for(int j = 0; j < LOOPS; j++){
+	        	startTime = System.nanoTime();
+	        	sorter.quicksort(input);
+	    		durationQuick += (System.nanoTime() - startTime);
+	        	startTime = System.nanoTime();
+	        	heap.heapSort(input);
+	    		durationHeap += (System.nanoTime() - startTime);
+        	}
+        	quickSort.getData().add(new XYChart.Data<Integer, Long>(i, (durationQuick/LOOPS)));
+        	heapSort.getData().add(new XYChart.Data<Integer, Long>(i, (durationHeap/LOOPS)));
+        }
+		
+        Scene scene  = new Scene(lineChart,800,600);
+        lineChart.getData().add(quickSort);
+        lineChart.getData().add(heapSort);
+       
+        stage.setScene(scene);
+        stage.show();
 	}
 
 	private static List<Integer> generateRandomNumbers(int n){		
@@ -37,4 +86,8 @@ public class HW5 {
 		System.out.print(numbers.get(numbers.size()-1));
 		System.out.println();		
 	}
+
+	public static void main(String[] args) {
+        launch(args);
+    }
 }
