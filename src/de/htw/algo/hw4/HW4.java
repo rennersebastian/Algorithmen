@@ -16,8 +16,8 @@ public class HW4 extends Application {
 	private Sorter sorter = new Sorter();
 	private static long startTime, durationIns, durationQuick, durationMerge;
 	private static BigInteger comparisonsQuick, comparisonsIns, comparisonsMerge;
-	private static final int MAX_N = 2000;
-	private static final int STEPS = 100;
+	private static final int MAX_N = 200;
+	private static final int STEPS = 10;
 	private static final int LOOPS = 500;
 	
     @SuppressWarnings({ "unchecked", "rawtypes" })
